@@ -11,3 +11,8 @@
 *.lai
 *.la
 *.a
+
+.cproject
+.project
+build/
+dist/
