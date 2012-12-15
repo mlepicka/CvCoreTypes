@@ -43,10 +43,16 @@ void CameraInfoProvider::prepareInterface() {
 	// Register data streams
 	registerStream("out_camerainfo", &out_camerainfo);
 
+	registerStream("in_camerainfo", &in_camerainfo);
+
 	// Register handlers
 	h_generate_data.setup(boost::bind(&CameraInfoProvider::generate_data, this));
 	registerHandler("generate_data", &h_generate_data);
 	addDependency("generate_data", NULL);
+
+	h_update_params.setup(boost::bind(&CameraInfoProvider::update_params, this));
+	registerHandler("update_params", &h_update_params);
+	addDependency("update_params", &in_camerainfo);
 
 	CLOG(LNOTICE) << "CameraMatrix: " << camera_matrix;
 }
@@ -75,6 +81,14 @@ void CameraInfoProvider::generate_data() {
 	camera_info.setDistCoeffs(dist_coeffs);
 
 	out_camerainfo.write(camera_info);
+}
+
+void CameraInfoProvider::update_params() {
+	Types::CameraInfo camera_info = in_camerainfo.read();
+	width = camera_info.width();
+	height = camera_info.height();
+	camera_matrix = camera_info.cameraMatrix();
+	dist_coeffs = camera_info.distCoeffs();
 }
 
 

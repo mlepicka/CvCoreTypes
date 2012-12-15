@@ -72,6 +72,15 @@ public:
 		m_width = width;
 	}
 
+	cv::Size size() {
+		return cv::Size(m_width, m_height);
+	}
+
+	void setSize(const cv::Size & s) {
+		m_width = s.width;
+		m_height = s.height;
+	}
+
 	cv::Mat cameraMatrix() const {
 		return m_camera_matrix;
 	}

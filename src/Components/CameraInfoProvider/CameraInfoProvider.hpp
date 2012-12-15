@@ -70,12 +70,18 @@ protected:
 	// Data streams
 	Base::DataStreamOut< Types::CameraInfo > out_camerainfo;
 
+	Base::DataStreamIn< Types::CameraInfo > in_camerainfo;
+
 	// Handlers
 	Base::EventHandler2 h_generate_data;
+
+	// Handlers
+	Base::EventHandler2 h_update_params;
 
 	
 	// Handlers
 	void generate_data();
+	void update_params();
 
 	Base::Property<int> width;
 	Base::Property<int> height;
