@@ -1,0 +1,33 @@
+<Task>
+	<!-- reference task information -->
+	<Reference>
+		<Author>
+			<name>Maciej Stefańczyk</name>
+			<link></link>
+		</Author>
+		
+		<Description>
+			<brief>Simple camera viewer</brief>
+			<full>Simple camera viewer</full>	
+		</Description>
+	</Reference>
+	
+	<!-- task definition -->
+	<Subtasks>
+		<Subtask name="Processing">
+			<Executor name="Exec1"  period="1">
+				<Component name="Source" type="CvCoreTypes:CameraInfoProvider" priority="1" bump="2">
+					<param name="camera_matrix">1 2 3; 4 5 6; 7 8 9</param>
+				</Component>
+			</Executor>
+		</Subtask>	
+	</Subtasks>
+	
+	<!-- pipes connecting datastreams -->
+	<DataStreams>
+	</DataStreams>
+</Task>
+
+
+
+
