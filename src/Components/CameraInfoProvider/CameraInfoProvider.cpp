@@ -41,9 +41,9 @@ CameraInfoProvider::~CameraInfoProvider() {
 void CameraInfoProvider::prepareInterface() {
 	// Register data streams, events and event handlers HERE!
 	// Register data streams
-	registerStream("out_camerainfo", &out_camerainfo);
+	registerStream("out_camera_info", &out_camerainfo);
 
-	registerStream("in_camerainfo", &in_camerainfo);
+	registerStream("in_camera_info", &in_camerainfo);
 
 	// Register handlers
 	h_generate_data.setup(boost::bind(&CameraInfoProvider::generate_data, this));
