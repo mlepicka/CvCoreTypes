@@ -61,6 +61,34 @@ public:
 
         return ss.str();
     }
+
+    static cv::Mat fromStr(const std::string & s, const int DATA_FORMAT) {
+        std::vector<double> values;
+
+        typedef std::vector< std::string > split_vector_type;
+
+        split_vector_type rows; // #2: Search for tokens
+        boost::split( rows, s, boost::is_any_of(";"), boost::token_compress_on );
+
+        std::vector<split_vector_type> mat;
+        mat.resize(rows.size());
+        for (int i = 0; i < rows.size(); ++i) {
+        	boost::trim( rows[i] );
+        	boost::split( mat[i], rows[i], boost::is_any_of(" ,"), boost::token_compress_on );
+        }
+
+        int r = rows.size();
+        int c = mat[0].size();
+
+        cv::Mat ret(r, c, DATA_FORMAT);
+        for (int rr = 0; rr < r; ++rr) {
+        	for (int cc = 0; cc < c; ++cc) {
+        		ret.at<float>(rr, cc) = boost::lexical_cast<float>(mat[rr][cc]);
+        	}
+        }
+
+        return ret;
+    }
 };
 
 }
