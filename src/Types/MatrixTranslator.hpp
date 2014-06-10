@@ -83,7 +83,7 @@ public:
         cv::Mat ret(r, c, DATA_FORMAT);
         for (int rr = 0; rr < r; ++rr) {
         	for (int cc = 0; cc < c; ++cc) {
-        		ret.at<float>(rr, cc) = boost::lexical_cast<float>(mat[rr][cc]);
+        		ret.at<double>(rr, cc) = boost::lexical_cast<double>(mat[rr][cc]);
         	}
         }
 
