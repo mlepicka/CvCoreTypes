@@ -16,7 +16,9 @@ class CameraInfo {
 public:
 	CameraInfo(int w = 640, int h = 480, float cx = 320, float cy = 240, float fx = 1, float fy = 1) :
 		m_width(w), m_height(h),
-		m_camera_matrix(cv::Mat(3, 3, CV_32FC1))
+        m_camera_matrix(cv::Mat(3, 3, CV_32FC1)),
+        m_proj_matrix(cv::Mat(3, 4, CV_32FC1)),
+        m_rectif_matrix(cv::Mat(3, 3, CV_32FC1))
 	{
 		setCx(cx);
 		setCy(cy);
@@ -97,12 +99,31 @@ public:
 		m_dist_coeffs = mat.clone();
 	}
 
+    cv::Mat projectionMatrix() const {
+        return m_proj_matrix;
+    }
+
+    void setProjectionMatrix(const cv::Mat mat) {
+        m_proj_matrix = mat.clone();
+    }
+
+    cv::Mat rectificationMatrix() const {
+        return m_rectif_matrix;
+    }
+
+    void setRectificationMatrix(const cv::Mat mat) {
+        m_rectif_matrix = mat.clone();
+    }
+
+
 private:
 	int m_width;
 	int m_height;
 
 	cv::Mat m_camera_matrix;
-	cv::Mat m_dist_coeffs;
+    cv::Mat m_dist_coeffs;
+    cv::Mat m_proj_matrix;
+    cv::Mat m_rectif_matrix;
 };
 
 }
