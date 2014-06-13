@@ -85,6 +85,8 @@ protected:
 	Base::Property<int> height;
 	Base::Property<cv::Mat, Types::MatrixTranslator> camera_matrix;
 	Base::Property<cv::Mat, Types::MatrixTranslator> dist_coeffs;
+    Base::Property<cv::Mat, Types::MatrixTranslator> rectificaton_matrix;
+    Base::Property<cv::Mat, Types::MatrixTranslator> projection_matrix;
     Base::Property<string> data_file;
 
 
