@@ -22,8 +22,10 @@ CameraInfoProvider::CameraInfoProvider(const std::string & name) :
 		camera_matrix("camera_matrix", cv::Mat(cv::Mat::eye(3, 3, CV_32FC1))),
         dist_coeffs("dist_coeffs", cv::Mat(cv::Mat::ones(1, 5, CV_32FC1))),
         rectificaton_matrix("rectificaton_matrix",cv::Mat(cv::Mat::eye(3,3,CV_32FC1))),
-        projection_matrix("projection_matrix",cv::Mat(cv::Mat::zeros(3,1,CV_32FC1))),
-        data_file("data_file", "")
+        projection_matrix("projection_matrix",cv::Mat(cv::Mat::zeros(3,4,CV_32FC1))),
+        rotation_matrix("rotation_matrix",cv::Mat(cv::Mat::eye(3,3,CV_32FC1))),
+        translation_matrix("translation_matrix",cv::Mat(cv::Mat::zeros(3,1,CV_32FC1))),
+        data_file("data_file", string("~/stereo/camera_info.yml"))
 {
 	width.addConstraint("0");
 	width.addConstraint("1280");
@@ -37,6 +39,8 @@ CameraInfoProvider::CameraInfoProvider(const std::string & name) :
 	registerProperty(dist_coeffs);
     registerProperty(rectificaton_matrix);
     registerProperty(projection_matrix);
+    registerProperty(rotation_matrix);
+    registerProperty(translation_matrix);
     registerProperty(data_file);
 }
 
@@ -86,11 +90,23 @@ bool CameraInfoProvider::onStart() {
 }
 
 void CameraInfoProvider::generate_data() {
+    LOG(LINFO) << "setWidth";
 	camera_info.setWidth(width);
+    LOG(LINFO) << "setHeight";
 	camera_info.setHeight(height);
+    LOG(LINFO) << "setCameraMatrix";
 	camera_info.setCameraMatrix(camera_matrix);
+    LOG(LINFO) << "setDistCoeffs";
 	camera_info.setDistCoeffs(dist_coeffs);
-
+    LOG(LINFO) << "setRectificationMatrix";
+    camera_info.setRectificationMatrix(rectificaton_matrix);
+    LOG(LINFO) << "setProjectionMatrix";
+    camera_info.setProjectionMatrix(projection_matrix);
+    LOG(LINFO) << "setRotationMatrix";
+    camera_info.setRotationMatrix(rotation_matrix);
+    LOG(LINFO) << "setTranlationMatrix";
+    camera_info.setTranlationMatrix(translation_matrix);
+    LOG(LINFO) << "write";
 	out_camerainfo.write(camera_info);
 }
 
@@ -100,33 +116,57 @@ void CameraInfoProvider::update_params() {
 	height = camera_info.height();
 	camera_matrix = camera_info.cameraMatrix();
 	dist_coeffs = camera_info.distCoeffs();
+    rectificaton_matrix = camera_info.rectificationMatrix();
+    projection_matrix = camera_info.projectionMatrix();
+    rotation_matrix = camera_info.rotationMatrix();
+    translation_matrix = camera_info.translationMatrix();
 }
 
 void CameraInfoProvider::reload_file() {
+    LOG(LINFO) << "Loading from " << data_file;
     cv::FileStorage fs(data_file, cv::FileStorage::READ);
+    cv::Mat oTempMat;
     try {
-        fs["M"] >> camera_matrix;
+        fs["M"] >> oTempMat;
+        camera_matrix = oTempMat;
     } catch (...)
     {
-        LOG[LWARNING] << "No camera matrix in " << data_file;
+        LOG(LWARNING) << "No camera matrix in " << data_file;
     }
     try {
-        fs["D"] >> dist_coeffs;
+        fs["D"] >> oTempMat;
+        dist_coeffs = oTempMat;
     } catch (...)
     {
-        LOG[LWARNING] << "No distortion coefficients in " << data_file;
+        LOG(LWARNING) << "No distortion coefficients in " << data_file;
     }
     try {
-        fs["R"] >> rectificaton_matrix;
+        fs["R"] >> oTempMat;
+        rectificaton_matrix = oTempMat;
     } catch (...)
     {
-        LOG[LWARNING] << "No rectificaton matrix in " << data_file;
+        LOG(LWARNING) << "No rectificaton matrix in " << data_file;
     }
     try {
-        fs["P"] >> projection_matrix;
+        fs["P"] >> oTempMat;
+        projection_matrix = oTempMat;
     } catch (...)
     {
-        LOG[LWARNING] << "No projection matrix in " << data_file;
+        LOG(LWARNING) << "No projection matrix in " << data_file;
+    }
+    try {
+        fs["ROT"] >> oTempMat;
+        rotation_matrix = oTempMat;
+    } catch (...)
+    {
+        LOG(LWARNING) << "No rotation matrix in " << data_file;
+    }
+    try {
+        fs["T"] >> oTempMat;
+        translation_matrix = oTempMat;
+    } catch (...)
+    {
+        LOG(LWARNING) << "No translation matrix in " << data_file;
     }
     fs.release();
 }

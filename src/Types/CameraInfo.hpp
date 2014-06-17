@@ -16,9 +16,12 @@ class CameraInfo {
 public:
 	CameraInfo(int w = 640, int h = 480, float cx = 320, float cy = 240, float fx = 1, float fy = 1) :
 		m_width(w), m_height(h),
-        m_camera_matrix(cv::Mat(3, 3, CV_32FC1)),
-        m_proj_matrix(cv::Mat(3, 4, CV_32FC1)),
-        m_rectif_matrix(cv::Mat(3, 3, CV_32FC1))
+        m_camera_matrix(cv::Mat(3, 3, CV_64F)),
+        m_dist_coeffs(cv::Mat(1, 5, CV_64F)),
+        m_proj_matrix(cv::Mat(3, 4, CV_64F)),
+        m_rectif_matrix(cv::Mat(3, 3, CV_64F)),
+        m_rotation_matrix(cv::Mat(3, 3, CV_64F)),
+        m_translation_matrix(cv::Mat(3, 1, CV_64F))
 	{
 		setCx(cx);
 		setCy(cy);
@@ -115,6 +118,22 @@ public:
         m_rectif_matrix = mat.clone();
     }
 
+    cv::Mat rotationMatrix() const {
+        return m_rotation_matrix;
+    }
+
+    void setRotationMatrix(const cv::Mat mat) {
+        m_rotation_matrix = mat.clone();
+    }
+
+    cv::Mat translationMatrix() const {
+        return m_translation_matrix;
+    }
+
+    void setTranlationMatrix(const cv::Mat mat) {
+        m_translation_matrix = mat.clone();
+    }
+
 
 private:
 	int m_width;
@@ -124,6 +143,9 @@ private:
     cv::Mat m_dist_coeffs;
     cv::Mat m_proj_matrix;
     cv::Mat m_rectif_matrix;
+    cv::Mat m_rotation_matrix;
+    cv::Mat m_translation_matrix;
+
 };
 
 }

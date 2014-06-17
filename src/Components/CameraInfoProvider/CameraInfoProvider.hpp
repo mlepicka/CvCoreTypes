@@ -80,6 +80,7 @@ protected:
 	// Handlers
 	void generate_data();
 	void update_params();
+    void reload_file();
 
 	Base::Property<int> width;
 	Base::Property<int> height;
@@ -87,9 +88,9 @@ protected:
 	Base::Property<cv::Mat, Types::MatrixTranslator> dist_coeffs;
     Base::Property<cv::Mat, Types::MatrixTranslator> rectificaton_matrix;
     Base::Property<cv::Mat, Types::MatrixTranslator> projection_matrix;
+    Base::Property<cv::Mat, Types::MatrixTranslator> rotation_matrix;
+    Base::Property<cv::Mat, Types::MatrixTranslator> translation_matrix;
     Base::Property<string> data_file;
-
-
 
 	Types::CameraInfo camera_info;
 
