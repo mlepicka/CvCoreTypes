@@ -90,23 +90,23 @@ bool CameraInfoProvider::onStart() {
 }
 
 void CameraInfoProvider::generate_data() {
-    LOG(LINFO) << "setWidth";
+    LOG(LDEBUG) << "setWidth";
 	camera_info.setWidth(width);
-    LOG(LINFO) << "setHeight";
+    LOG(LDEBUG) << "setHeight";
 	camera_info.setHeight(height);
-    LOG(LINFO) << "setCameraMatrix";
+    LOG(LDEBUG) << "setCameraMatrix";
 	camera_info.setCameraMatrix(camera_matrix);
-    LOG(LINFO) << "setDistCoeffs";
+    LOG(LDEBUG) << "setDistCoeffs";
 	camera_info.setDistCoeffs(dist_coeffs);
-    LOG(LINFO) << "setRectificationMatrix";
+    LOG(LDEBUG) << "setRectificationMatrix";
     camera_info.setRectificationMatrix(rectificaton_matrix);
-    LOG(LINFO) << "setProjectionMatrix";
+    LOG(LDEBUG) << "setProjectionMatrix";
     camera_info.setProjectionMatrix(projection_matrix);
-    LOG(LINFO) << "setRotationMatrix";
+    LOG(LDEBUG) << "setRotationMatrix";
     camera_info.setRotationMatrix(rotation_matrix);
-    LOG(LINFO) << "setTranlationMatrix";
+    LOG(LDEBUG) << "setTranlationMatrix";
     camera_info.setTranlationMatrix(translation_matrix);
-    LOG(LINFO) << "write";
+    LOG(LDEBUG) << "write";
 	out_camerainfo.write(camera_info);
 }
 
@@ -123,7 +123,7 @@ void CameraInfoProvider::update_params() {
 }
 
 void CameraInfoProvider::reload_file() {
-    LOG(LINFO) << "Loading from " << data_file;
+    LOG(LDEBUG) << "Loading from " << data_file;
     cv::FileStorage fs(data_file, cv::FileStorage::READ);
     cv::Mat oTempMat;
     try {
