@@ -62,18 +62,15 @@ void CameraInfoProvider::prepareInterface() {
     //"Reload file" handler
     h_reload_file.setup(boost::bind(&CameraInfoProvider::reload_file, this));
     registerHandler("reload_file", &h_reload_file);
-    addDependency("reload_file", NULL);
 
     //"Update params" handler
 	h_update_params.setup(boost::bind(&CameraInfoProvider::update_params, this));
 	registerHandler("update_params", &h_update_params);
 	addDependency("update_params", &in_camerainfo);
 
-	CLOG(LNOTICE) << "CameraMatrix: " << camera_matrix;
 }
 
 bool CameraInfoProvider::onInit() {
-    reload_file();
 	return true;
 }
 
