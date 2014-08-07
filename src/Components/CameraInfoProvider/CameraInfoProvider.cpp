@@ -80,8 +80,6 @@ bool CameraInfoProvider::onInit() {
 	    CLOG(LINFO) <<"reload_file";
 	    reload_file();
       }
-      else
-	CLOG(LINFO) <<"dont reload_file";
       
 return true;
 }
