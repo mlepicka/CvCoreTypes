@@ -8,9 +8,6 @@ FILE(GLOB files *.cpp)
 ADD_LIBRARY(CameraInfoProvider SHARED ${files})
 
 # Link external libraries
-TARGET_LINK_LIBRARIES(CameraInfoProvider ${DisCODe_LIBRARIES} )
-
-# Add another libraries if necessary, for example:
-TARGET_LINK_LIBRARIES(CameraInfoProvider ${DisCODe_LIBRARIES} ${OpenCV_LIBS} )
+TARGET_LINK_LIBRARIES(CameraInfoProvider ${DCL_LIBRARIES} )
 
 INSTALL_COMPONENT(CameraInfoProvider)
