@@ -64,7 +64,7 @@ void CameraInfoProvider::prepareInterface() {
 	registerHandler("update_params", boost::bind(&CameraInfoProvider::update_params, this));
 	addDependency("update_params", &in_camerainfo);
 
-	CLOG(LNOTICE) << "CameraMatrix: " << camera_matrix;
+//	CLOG(LNOTICE) << "CameraMatrix: " << camera_matrix;
 }
 
 bool CameraInfoProvider::onInit() {
@@ -89,23 +89,23 @@ bool CameraInfoProvider::onStart() {
 }
 
 void CameraInfoProvider::generate_data() {
-	LOG(LDEBUG) << "setWidth";
+	CLOG(LDEBUG) << "setWidth";
 	camera_info.setWidth(width);
-	LOG(LDEBUG) << "setHeight";
+	CLOG(LDEBUG) << "setHeight";
 	camera_info.setHeight(height);
-	LOG(LDEBUG) << "setCameraMatrix";
+	CLOG(LDEBUG) << "setCameraMatrix";
 	camera_info.setCameraMatrix(camera_matrix);
-	LOG(LDEBUG) << "setDistCoeffs";
+	CLOG(LDEBUG) << "setDistCoeffs";
 	camera_info.setDistCoeffs(dist_coeffs);
-	LOG(LDEBUG) << "setRectificationMatrix";
+	CLOG(LDEBUG) << "setRectificationMatrix";
 	camera_info.setRectificationMatrix(rectificaton_matrix);
-	LOG(LDEBUG) << "setProjectionMatrix";
+	CLOG(LDEBUG) << "setProjectionMatrix";
 	camera_info.setProjectionMatrix(projection_matrix);
-	LOG(LDEBUG) << "setRotationMatrix";
+	CLOG(LDEBUG) << "setRotationMatrix";
 	camera_info.setRotationMatrix(rotation_matrix);
-	LOG(LDEBUG) << "setTranlationMatrix";
+	CLOG(LDEBUG) << "setTranlationMatrix";
 	camera_info.setTranlationMatrix(translation_matrix);
-	LOG(LDEBUG) << "write";
+	CLOG(LDEBUG) << "write";
 	out_camerainfo.write(camera_info);
 }
 
@@ -122,44 +122,44 @@ void CameraInfoProvider::update_params() {
 }
 
 void CameraInfoProvider::reload_file() {
-	LOG(LDEBUG) << "Loading from " << data_file;
+	CLOG(LDEBUG) << "Loading from " << data_file;
 	cv::FileStorage fs(data_file, cv::FileStorage::READ);
 	cv::Mat oTempMat;
 	try {
 		fs["M"] >> oTempMat;
 		camera_matrix = oTempMat;
 	} catch (...) {
-		LOG(LWARNING) << "No camera matrix in " << data_file;
+		CLOG(LWARNING) << "No camera matrix in " << data_file;
 	}
 	try {
 		fs["D"] >> oTempMat;
 		dist_coeffs = oTempMat;
 	} catch (...) {
-		LOG(LWARNING) << "No distortion coefficients in " << data_file;
+		CLOG(LWARNING) << "No distortion coefficients in " << data_file;
 	}
 	try {
 		fs["R"] >> oTempMat;
 		rectificaton_matrix = oTempMat;
 	} catch (...) {
-		LOG(LWARNING) << "No rectificaton matrix in " << data_file;
+		CLOG(LWARNING) << "No rectificaton matrix in " << data_file;
 	}
 	try {
 		fs["P"] >> oTempMat;
 		projection_matrix = oTempMat;
 	} catch (...) {
-		LOG(LWARNING) << "No projection matrix in " << data_file;
+		CLOG(LWARNING) << "No projection matrix in " << data_file;
 	}
 	try {
 		fs["ROT"] >> oTempMat;
 		rotation_matrix = oTempMat;
 	} catch (...) {
-		LOG(LWARNING) << "No rotation matrix in " << data_file;
+		CLOG(LWARNING) << "No rotation matrix in " << data_file;
 	}
 	try {
 		fs["T"] >> oTempMat;
 		translation_matrix = oTempMat;
 	} catch (...) {
-		LOG(LWARNING) << "No translation matrix in " << data_file;
+		CLOG(LWARNING) << "No translation matrix in " << data_file;
 	}
 	fs.release();
 }
