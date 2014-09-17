@@ -88,13 +88,13 @@ void HomogenousMatrixProvider::generateHomogenousMatrix()
 {
 	CLOG(LTRACE) << "HomogenousMatrixProvider::generateHomogenousMatrix()\n";
 
-	Mat_<double> rvec;
-	Mat_<double> tvec;
+//	Mat_<double> rvec;
+//	Mat_<double> tvec;
 	Mat_<double> outputMatrix(4,4);
 
 	// Create homogenous matrix.
-	Mat_<double> rotationMatrix;
-	Rodrigues(rvec, rotationMatrix);
+//    Mat_<double> rotationMatrix (3,3);
+    //Rodrigues(rvec, rotationMatrix);
 
 	// Roll - rotation around the X (blue) axis.
 	cv::Mat roll = (cv::Mat_<double>(4, 4) <<
@@ -124,12 +124,12 @@ void HomogenousMatrixProvider::generateHomogenousMatrix()
 			            0, 0, 0, prop_z,
 				        0, 0, 0, 0 );
 
-	//rottMatrix = rottMatrix * RX;
+    //rottMatrix = rottMatrix ansf* RX;
 	// transform
 	outputMatrix = t + yaw * pitch * roll;
 
+    // Debug: display created matrix.
 	HomogMatrix hm;
-
 	stringstream ss;
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 4; ++j) {
@@ -137,7 +137,7 @@ void HomogenousMatrixProvider::generateHomogenousMatrix()
             ss << hm.getElement(i, j) << "  ";
 		}
 	}
-	CLOG(LDEBUG) << "HomogMatrix:\n" << ss.str() << endl;
+    CLOG(LINFO) << "HomogMatrix:\n" << ss.str() << endl;
 
 	out_homogMatrix.write(hm);
 }
