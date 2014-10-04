@@ -34,7 +34,7 @@ struct HomogMatrix
 
 private:
 
-    Eigen::Matrix4f elements_;
+    Eigen::Matrix<float,4,4,Eigen::DontAlign> elements_;
 
     friend class boost::serialization::access;
 	template <class Archive>
@@ -42,6 +42,7 @@ private:
 	{
         ar & elements_;
 	}
+
 };
 
 } // namespace Types
