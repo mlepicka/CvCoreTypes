@@ -9,18 +9,38 @@
 #define HOMOGMATRIX_HPP_
 
 #include <boost/serialization/serialization.hpp>
+#include <Eigen/Core>
 
 namespace Types {
 
 struct HomogMatrix
 {
-	double elements[3][4];
+
+    Eigen::Matrix4f getElements(){
+        return elements_;
+    }
+
+    void setElements(Eigen::Matrix4f elements){
+        elements_ = elements;
+    }
+
+    double getElement(int x, int y){
+        return elements_(x,y);
+    }
+
+    void setElement(int x, int y, double element){
+        elements_(x,y) = element;
+    }
+
 private:
-	friend class boost::serialization::access;
+
+    Eigen::Matrix4f elements_;
+
+    friend class boost::serialization::access;
 	template <class Archive>
 	void serialize(Archive & ar, const unsigned int version)
 	{
-		ar & elements;
+        ar & elements_;
 	}
 };
 

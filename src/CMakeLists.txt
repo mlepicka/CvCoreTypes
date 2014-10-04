@@ -10,14 +10,19 @@ include_directories(.)
 FIND_PACKAGE(Boost 1.41.0 REQUIRED COMPONENTS system thread filesystem date_time)
 include_directories(SYSTEM ${Boost_INCLUDE_DIR})
 
-# Set variable with list of all libraries common for this DCL
-SET(DCL_LIBRARIES "${DisCODe_LIBRARIES} ${Boost_LIBRARIES}")
+# OpenCV library
+FIND_PACKAGE( OpenCV REQUIRED )
+
+
+# Find EIGEN
+find_package(Eigen REQUIRED)
+include_directories(${EIGEN_INCLUDE_DIR})
 
 # Find another necessary libraries
 
-# OpenCV library
-FIND_PACKAGE( OpenCV REQUIRED )
-SET(DCL_LIBRARIES ${DCL_LIBRARIES} ${OpenCV_LIBS})
+# Set variable with list of all libraries common for this DCL
+SET(DCL_LIBRARIES ${DisCODe_LIBRARIES} ${Boost_LIBRARIES} ${OpenCV_LIBS})
+
 
 # Find another DCLs our one depends on
 # Use macro: DISCODE_FIND_DCL(<DCL_NAME>)
