@@ -34,7 +34,8 @@ struct HomogMatrix
 
 private:
 
-    Eigen::Matrix<float,4,4,Eigen::DontAlign> elements_;
+    //Eigen::Matrix<float,4,4,Eigen::DontAlign> elements_;
+    Eigen::Matrix4f elements_;
 
     friend class boost::serialization::access;
 	template <class Archive>
