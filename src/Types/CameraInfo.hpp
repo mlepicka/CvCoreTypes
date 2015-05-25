@@ -10,18 +10,20 @@
 
 #include <opencv2/core/core.hpp>
 
+#include <boost/array.hpp>
+
 namespace Types {
 
 class CameraInfo {
 public:
 	CameraInfo(int w = 640, int h = 480, float cx = 320, float cy = 240, float fx = 1, float fy = 1) :
 		m_width(w), m_height(h),
-        m_camera_matrix(cv::Mat(3, 3, CV_64F)),
-        m_dist_coeffs(cv::Mat(1, 5, CV_64F)),
-        m_proj_matrix(cv::Mat(3, 4, CV_64F)),
-        m_rectif_matrix(cv::Mat(3, 3, CV_64F)),
-        m_rotation_matrix(cv::Mat(3, 3, CV_64F)),
-        m_translation_matrix(cv::Mat(3, 1, CV_64F))
+        m_camera_matrix(cv::Mat(3, 3, CV_32F)),
+        m_dist_coeffs(cv::Mat(1, 5, CV_32F)),
+        m_proj_matrix(cv::Mat(3, 4, CV_32F)),
+        m_rectif_matrix(cv::Mat(3, 3, CV_32F)),
+        m_rotation_matrix(cv::Mat(3, 3, CV_32F)),
+        m_translation_matrix(cv::Mat(3, 1, CV_32F))
 	{
 		setCx(cx);
 		setCy(cy);
@@ -101,6 +103,12 @@ public:
 	void setDistCoeffs(const cv::Mat mat) {
 		m_dist_coeffs = mat.clone();
 	}
+	
+	template<typename T, std::size_t N>
+	void setDistCoeffs(boost::array<T, N> arr) {
+		for (int i = 0; i < 5; ++i)
+			m_dist_coeffs.at<float>(0, i) = arr[i];
+	}
 
     cv::Mat projectionMatrix() const {
         return m_proj_matrix;
@@ -132,6 +140,25 @@ public:
 
     void setTranlationMatrix(const cv::Mat mat) {
         m_translation_matrix = mat.clone();
+    }
+    
+    bool operator== (const CameraInfo & rhs) {
+	bool ret = (m_width == rhs.m_width) && (m_height == rhs.m_height);
+	ret = ret && cmpMat(m_camera_matrix, rhs.m_camera_matrix);
+	ret = ret && cmpMat(m_dist_coeffs, rhs.m_dist_coeffs);
+	
+	return ret;
+    }
+    
+    bool operator!= (const CameraInfo & rhs) {
+	return ! ( (*this) == rhs );
+    }
+    
+    bool cmpMat(cv::Mat m1, cv::Mat m2) {
+	cv::Mat diff;
+	cv::compare(m1, m2, diff, cv::CMP_NE);
+	int nz = cv::countNonZero(diff);
+	return nz==0;
     }
 
 
