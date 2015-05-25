@@ -144,9 +144,9 @@ public:
     
     bool operator== (const CameraInfo & rhs) {
 	bool ret = (m_width == rhs.m_width) && (m_height == rhs.m_height);
-	ret = ret && cmpMat(m_camera_matrix, rhs.m_camera_matrix);
+/*	ret = ret && cmpMat(m_camera_matrix, rhs.m_camera_matrix);
 	ret = ret && cmpMat(m_dist_coeffs, rhs.m_dist_coeffs);
-	
+	*/
 	return ret;
     }
     
@@ -155,7 +155,7 @@ public:
     }
     
     bool cmpMat(cv::Mat m1, cv::Mat m2) {
-	cv::Mat diff;
+	cv::Mat diff; // = m1;
 	cv::compare(m1, m2, diff, cv::CMP_NE);
 	int nz = cv::countNonZero(diff);
 	return nz==0;
