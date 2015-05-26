@@ -44,12 +44,12 @@ HomogenousMatrixProvider::~HomogenousMatrixProvider()
 }
 
 void HomogenousMatrixProvider::prepareInterface() {
-	h_generateHomogenousMatrix.setup(this, &HomogenousMatrixProvider::generateHomogenousMatrix);
-	registerHandler("generateHomogenousMatrix", &h_generateHomogenousMatrix);
-    addDependency("generateHomogenousMatrix", NULL);
-
+	// Register the output stream.
 	registerStream("out_homogMatrix", &out_homogMatrix);
 
+	// Register the default handler, activated in every step.
+	registerHandler("generateHomogenousMatrix", boost::bind(&HomogenousMatrixProvider::generateHomogenousMatrix,this));
+	addDependency("generateHomogenousMatrix", NULL);
 }
 
 bool HomogenousMatrixProvider::onStart()
@@ -124,20 +124,12 @@ void HomogenousMatrixProvider::generateHomogenousMatrix()
 			            0, 0, 0, prop_z,
 				        0, 0, 0, 0 );
 
-    //rottMatrix = rottMatrix ansf* RX;
-	// transform
+	// Build the whole transform.
 	outputMatrix = t + yaw * pitch * roll;
 
-    // Debug: display created matrix.
-	HomogMatrix hm;
-	stringstream ss;
-	for (int i = 0; i < 3; ++i) {
-		for (int j = 0; j < 4; ++j) {
-            hm.setElement(i, j, outputMatrix.at<double>(i,j) );
-            ss << hm.getElement(i, j) << "  ";
-		}
-	}
-    CLOG(LINFO) << "HomogMatrix:\n" << ss.str() << endl;
+	// Debug: display created matrix.
+	HomogMatrix hm (outputMatrix);
+	CLOG(LINFO) << hm;
 
 	out_homogMatrix.write(hm);
 }
