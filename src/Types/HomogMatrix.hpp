@@ -10,12 +10,14 @@
 
 #include <Eigen/Core>
 #include <Eigen/Geometry> 
+#include <Eigen/LU>
 #include <opencv2/core/core.hpp>
 
 namespace Types {
 
 /// Base HomogMatrix type.
 typedef Eigen::Transform< double, 3, Eigen::Affine > HomogMatrixBaseType;
+typedef Eigen::Transform< double, 3, Eigen::AffineCompact > CompactHomogMatrixBaseType;
 
 
 /// Class representing homogenous matrix.
@@ -26,24 +28,43 @@ struct HomogMatrix : public HomogMatrixBaseType
 	{
 	}
 
-/*	/// Constructor copying  - creates an identity matrix.
-	HomogMatrix() ( const HomogMatrix & hm_) : HomogMatrix( hm_)
-	{
-		
-	}*/
 
-	/// Constructor casting the 4x4 OpenCv matrix Matx44d to HomogMatrix (Eigen matrix Matrix4d).
+	/// Constructor casting the OpenCv cv::Mat to HomogMatrix Eigen::Transform (with doubles).
+	HomogMatrix(cv::Mat mat_) {
+		cv::Matx44d m = mat_;
+		*this = HomogMatrix(m);
+
+	}
+
+	/// Constructor casting the 4x4 OpenCv matrix Matx44d to HomogMatrix Eigen::Transform (with doubles).
 	HomogMatrix(cv::Matx44d mat_) {
 	
-		// Check proper sizes of cv::mat  -- not required as strong typing is used.
+		// Check proper sizes of cv::Mat  -- not required as strong typing is used.
 		//assert ( (mat_.rows() == 4) && (mat_.cols() == 4)) || 16x1 || 1x16
 
-		// Copy values to cv::mat.
+		// Copy values from cv::mat.
 		for (int i = 0; i < 4; ++i)
 			for (int j = 0; j < 4; ++j) 
 				(*this)(i,j) = mat_(i,j);
 	}
 
+	HomogMatrix(const CompactHomogMatrixBaseType & mat_) :  HomogMatrixBaseType ( HomogMatrixBaseType::Identity ())
+	{
+		// Copy (overwrite) values from Eigen::Transform< double, 3, Eigen::AffineCompact >.
+		for (int i = 0; i < 3; ++i)
+			for (int j = 0; j < 4; ++j) 
+				(*this)(i,j) = mat_(i,j);
+	}
+
+
+	/// Constructor casting the Eigen 4x4 matrix with float to HomogMatrix (Eigen::Transform with doubles).
+	HomogMatrix(Eigen::Matrix<float, 4, 4> mat_) {
+		// Copy values from matrix.
+		for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j) 
+				(*this)(i,j) = mat_(i,j);
+	}
+	
 
 	/// Method casts the HomogMatrix (Eigen matrix Matrix4d) to 4x4 OpenCv matrix Matx44d.
 	operator cv::Matx44d const()
@@ -57,10 +78,31 @@ struct HomogMatrix : public HomogMatrixBaseType
 	}
 
 
+/*	/// Method casts the HomogMatrix (tHomogMatrixBaseType) to CompactHomogMatrixBaseType.
+	HomogMatrix & operator = (const CompactHomogMatrixBaseType & hm_)
+	{
+		*this = HomogMatrixBaseType::Identity ();
+		// Copy values from HM.
+		for (int i = 0; i < 3; ++i)
+			for (int j = 0; j < 4; ++j) 
+				(*this)(i,j) = hm_(i,j);
+		return *this;
+	}*/
 
 	/// Redirect the output stream.
 	friend ostream & operator<< (ostream &out_, const HomogMatrix &hm_) {
    		return out_ << hm_.matrix();
+	}
+
+	/// Checks whether matrices are similar - returns true if distance is smaller than eps (set to 1e-5 as default).
+	bool isSimilar(const HomogMatrixBaseType & hm_, double eps = 1e-5) {
+		return (this->matrix()-hm_.matrix()).isMuchSmallerThan(eps);
+	}
+
+
+	/// Checks whether matrix is identity matrix - returns true if distance is smaller than eps (set to 1e-5 as default).
+	bool isIdentity(double eps = 1e-5) {
+		return isSimilar(HomogMatrixBaseType::Identity(), eps);
 	}
 
 };
