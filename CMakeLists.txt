@@ -23,4 +23,10 @@ ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 ENABLE_TESTING()
 ADD_SUBDIRECTORY(src)
 
+install(
+    FILES cmake/FindEigen.cmake cmake/FindEigen3.cmake
+    DESTINATION cmake
+    COMPONENT sdk
+)
+
 REBUILD_DCL_CACHE()

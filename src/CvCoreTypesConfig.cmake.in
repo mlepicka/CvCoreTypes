@@ -10,6 +10,8 @@ INCLUDE_DIRECTORIES(${CvCoreTypes_INCLUDE_DIR})
 SET(CvCoreTypes_LIB_DIR @CMAKE_INSTALL_PREFIX@/lib)
 LINK_DIRECTORIES(${CvCoreTypes_LIB_DIR})
 
+SET(CMAKE_MODULE_PATH @CMAKE_INSTALL_PREFIX@/cmake ${CMAKE_MODULE_PATH})
+
 # list of libraries to link against when using features of CvCoreTypes
 # add all additional libraries built by this dcl (NOT components)
 # SET(CvCoreTypes_LIBS lib_1 lib_2)
