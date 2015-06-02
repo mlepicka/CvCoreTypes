@@ -66,6 +66,32 @@ struct HomogMatrix : public HomogMatrixBaseType
 	}
 	
 
+	/// Method casts the HomogMatrix (Eigen matrix Matrix4d) to Eigen::Affine3f.
+	operator Eigen::Affine3f const()
+	{
+		Eigen::Affine3f mat;
+		// Copy values.
+		for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j) 
+				mat(i,j) = (*this)(i,j);
+		return mat;
+	}
+
+
+	/// Method casts Eigen::Affine3f to HomogMatrix.
+	HomogMatrix & operator = (const Eigen::Affine3f & aff3f_)
+	{
+		// Copy values from HM.
+		for (int i = 0; i < 3; ++i)
+			for (int j = 0; j < 4; ++j) 
+				(*this)(i,j) = aff3f_(i,j);
+		for (int i = 0; i < 3; ++i)
+			(*this)(i,3) = 0;
+		(*this)(3,3) = 1;
+		return *this;
+	}
+
+
 	/// Method casts the HomogMatrix (Eigen matrix Matrix4d) to 4x4 OpenCv matrix Matx44d.
 	operator cv::Matx44d const()
 	{
@@ -76,6 +102,8 @@ struct HomogMatrix : public HomogMatrixBaseType
 				mat(i,j) = (*this)(i,j);
 		return mat;
 	}
+
+
 
 
 /*	/// Method casts the HomogMatrix (tHomogMatrixBaseType) to CompactHomogMatrixBaseType.
