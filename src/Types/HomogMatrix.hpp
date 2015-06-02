@@ -74,6 +74,7 @@ struct HomogMatrix : public HomogMatrixBaseType
 		for (int i = 0; i < 4; ++i)
 			for (int j = 0; j < 4; ++j) 
 				mat(i,j) = (*this)(i,j);
+//		std::cout<<"CAST! Input hm = \n" << (*this) << "\n Output aff3f =\n" << mat.matrix();
 		return mat;
 	}
 
@@ -82,12 +83,10 @@ struct HomogMatrix : public HomogMatrixBaseType
 	HomogMatrix & operator = (const Eigen::Affine3f & aff3f_)
 	{
 		// Copy values from HM.
-		for (int i = 0; i < 3; ++i)
+		for (int i = 0; i < 4; ++i)
 			for (int j = 0; j < 4; ++j) 
 				(*this)(i,j) = aff3f_(i,j);
-		for (int i = 0; i < 3; ++i)
-			(*this)(i,3) = 0;
-		(*this)(3,3) = 1;
+//		std::cout<<"CAST! Input aff3f =\n" << aff3f_.matrix() <<"\n Output hm = \n" << (*this);
 		return *this;
 	}
 
