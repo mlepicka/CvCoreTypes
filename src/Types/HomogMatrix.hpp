@@ -13,6 +13,8 @@
 #include <Eigen/LU>
 #include <opencv2/core/core.hpp>
 
+#include <limits>
+
 namespace Types {
 
 /// Base HomogMatrix type.
@@ -44,8 +46,8 @@ struct HomogMatrix : public HomogMatrixBaseType
 
 		// Copy values from cv::mat.
 		for (int i = 0; i < 4; ++i)
-			for (int j = 0; j < 4; ++j) 
-				(*this)(i,j) = mat_(i,j);
+			for (int j = 0; j < 4; ++j)
+				matrix()(i,j) = mat_(i,j);
 	}
 
 	HomogMatrix(const CompactHomogMatrixBaseType & mat_) :  HomogMatrixBaseType ( HomogMatrixBaseType::Identity ())
@@ -53,7 +55,7 @@ struct HomogMatrix : public HomogMatrixBaseType
 		// Copy (overwrite) values from Eigen::Transform< double, 3, Eigen::AffineCompact >.
 		for (int i = 0; i < 3; ++i)
 			for (int j = 0; j < 4; ++j) 
-				(*this)(i,j) = mat_(i,j);
+				matrix()(i,j) = mat_(i,j);
 	}
 
 
@@ -62,7 +64,7 @@ struct HomogMatrix : public HomogMatrixBaseType
 		// Copy values from matrix.
 		for (int i = 0; i < 4; ++i)
 			for (int j = 0; j < 4; ++j) 
-				(*this)(i,j) = mat_(i,j);
+				matrix()(i,j) = mat_(i,j);
 	}
 	
 
@@ -73,8 +75,8 @@ struct HomogMatrix : public HomogMatrixBaseType
 		// Copy values.
 		for (int i = 0; i < 4; ++i)
 			for (int j = 0; j < 4; ++j) 
-				mat(i,j) = (*this)(i,j);
-//		std::cout<<"CAST! Input hm = \n" << (*this) << "\n Output aff3f =\n" << mat.matrix();
+				mat(i,j) = matrix()(i,j);
+//		std::cout<<"CAST! Input hm = \n" << matrix() << "\n Output aff3f =\n" << mat.matrix();
 		return mat;
 	}
 
@@ -85,8 +87,8 @@ struct HomogMatrix : public HomogMatrixBaseType
 		// Copy values from HM.
 		for (int i = 0; i < 4; ++i)
 			for (int j = 0; j < 4; ++j) 
-				(*this)(i,j) = aff3f_(i,j);
-//		std::cout<<"CAST! Input aff3f =\n" << aff3f_.matrix() <<"\n Output hm = \n" << (*this);
+				matrix()(i,j) = aff3f_(i,j);
+//		std::cout<<"CAST! Input aff3f =\n" << aff3f_.matrix() <<"\n Output hm = \n" << matrix();
 		return *this;
 	}
 
@@ -98,7 +100,7 @@ struct HomogMatrix : public HomogMatrixBaseType
 		// Copy values to cv::mat.
 		for (int i = 0; i < 4; ++i)
 			for (int j = 0; j < 4; ++j) 
-				mat(i,j) = (*this)(i,j);
+				mat(i,j) = matrix()(i,j);
 		return mat;
 	}
 
@@ -112,13 +114,14 @@ struct HomogMatrix : public HomogMatrixBaseType
 		// Copy values from HM.
 		for (int i = 0; i < 3; ++i)
 			for (int j = 0; j < 4; ++j) 
-				(*this)(i,j) = hm_(i,j);
+				matrix()(i,j) = hm_(i,j);
 		return *this;
 	}*/
 
 	/// Redirect the output stream.
-	friend ostream & operator<< (ostream &out_, const HomogMatrix &hm_) {
-   		return out_ << hm_.matrix();
+	friend ostream & operator<< (ostream &out_, HomogMatrix &hm_) {
+		cv::Matx44d tmp = hm_;
+   		return out_ << tmp;
 	}
 
 	/// Checks whether matrices are similar - returns true if distance is smaller than eps (set to 1e-5 as default).
