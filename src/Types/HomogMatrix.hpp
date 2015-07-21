@@ -12,7 +12,7 @@
 #include <Eigen/Geometry> 
 #include <Eigen/LU>
 #include <opencv2/core/core.hpp>
-
+#include <opencv2/calib3d/calib3d.hpp>
 #include <limits>
 
 namespace Types {
@@ -50,6 +50,28 @@ struct HomogMatrix : public HomogMatrixBaseType
 				matrix()(i,j) = mat_(i,j);
 	}
 
+    /// Constructor casting Eigen::Transform with floats to HomogMatrix Eigen::Transform (with doubles).
+    HomogMatrix(Eigen::Matrix4f mat_)
+    {
+        cv::Mat_<double> rotationMatrixf = cv::Mat_<double>::zeros(3,3);
+        cv::Mat_<double> rotation;
+        for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < 3; ++j) {
+                rotationMatrixf(i,j)=static_cast<double>(mat_(i, j));
+            }
+            matrix()(i,3) = static_cast<double>(mat_(i, 3));
+        }
+
+        Rodrigues(rotationMatrixf, rotation);
+        cv::Mat_<double> rotationMatrixd;
+        Rodrigues(rotation, rotationMatrixd);
+        for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < 3; ++j) {
+                matrix()(i,j)=rotationMatrixd(i, j);
+            }
+        }
+    }
+
 	HomogMatrix(const CompactHomogMatrixBaseType & mat_) :  HomogMatrixBaseType ( HomogMatrixBaseType::Identity ())
 	{
 		// Copy (overwrite) values from Eigen::Transform< double, 3, Eigen::AffineCompact >.
@@ -60,12 +82,12 @@ struct HomogMatrix : public HomogMatrixBaseType
 
 
 	/// Constructor casting the Eigen 4x4 matrix with float to HomogMatrix (Eigen::Transform with doubles).
-	HomogMatrix(Eigen::Matrix<float, 4, 4> mat_) {
-		// Copy values from matrix.
-		for (int i = 0; i < 4; ++i)
-			for (int j = 0; j < 4; ++j) 
-				matrix()(i,j) = mat_(i,j);
-	}
+//	HomogMatrix(Eigen::Matrix<float, 4, 4> mat_) {
+//		// Copy values from matrix.
+//		for (int i = 0; i < 4; ++i)
+//			for (int j = 0; j < 4; ++j)
+//				matrix()(i,j) = mat_(i,j);
+//	}
 	
 
 	/// Method casts the HomogMatrix (Eigen matrix Matrix4d) to Eigen::Affine3f.
