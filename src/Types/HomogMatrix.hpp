@@ -50,21 +50,27 @@ struct HomogMatrix : public HomogMatrixBaseType
 				matrix()(i,j) = mat_(i,j);
 	}
 
-    /// Constructor casting Eigen::Transform with floats to HomogMatrix Eigen::Transform (with doubles).
+	/// Constructor casting Eigen::Transform with floats to HomogMatrix Eigen::Transform (with doubles). The conversion is done with the use of Rodrigues (forward and inverse) transform.
     HomogMatrix(Eigen::Matrix4f mat_)
     {
-        cv::Mat_<double> rotationMatrixf = cv::Mat_<double>::zeros(3,3);
+		cv::Mat_<double> rotationMatrix_in = cv::Mat_<double>::zeros(3,3);
         cv::Mat_<double> rotation;
-        for (int i = 0; i < 3; ++i) {
+
+		// Copy input values to temporary matrix.
+		for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {
-                rotationMatrixf(i,j)=static_cast<double>(mat_(i, j));
+				rotationMatrix_in(i,j)=static_cast<double>(mat_(i, j));
             }
             matrix()(i,3) = static_cast<double>(mat_(i, 3));
         }
 
-        Rodrigues(rotationMatrixf, rotation);
+		// Compute rotation vector.
+		Rodrigues(rotationMatrix_in, rotation);
         cv::Mat_<double> rotationMatrixd;
-        Rodrigues(rotation, rotationMatrixd);
+		// Transform resulting rotation vector into matrix<double>.
+		Rodrigues(rotation, rotationMatrixd);
+
+		// Copy values to output matrix.
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {
                 matrix()(i,j)=rotationMatrixd(i, j);
