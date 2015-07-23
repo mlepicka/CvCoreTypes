@@ -20,7 +20,6 @@ using namespace std;
 using namespace cv;
 using namespace boost;
 using Types::HomogMatrix;
-using namespace Types::Objects3D;
 
 HomogenousMatrixProvider::HomogenousMatrixProvider(const std::string & n) :
 	Component(n),
@@ -94,7 +93,7 @@ void HomogenousMatrixProvider::generateHomogenousMatrix()
 	// Create homogenous matrix.
 //    Mat_<double> rotationMatrix (3,3);
     //Rodrigues(rvec, rotationMatrix);
-
+/*
 	// Roll - rotation around the X (blue) axis.
 	cv::Matx44d roll;
 	roll <<
@@ -132,18 +131,17 @@ void HomogenousMatrixProvider::generateHomogenousMatrix()
 		0, 0, 0, 0;
 	CLOG(LDEBUG) << "trans (Matx44d):\n" << t;
 
-/*	HomogMatrix tmp2 = t;
-	Matx44d tmp3 = tmp2;
-	CLOG(LDEBUG) << "tmp2 (HomogMatrix):\n" << tmp2;
-	CLOG(LDEBUG) << "tmp3 (Matx44d):\n" << tmp3;*/
-
 	// Build the whole transform.
 	cv::Matx44d outputMatrix = t + yaw * pitch * roll;
 
+
 	CLOG(LDEBUG) << "output (Matx44d):\n" << outputMatrix;
+*/
+	// Create matrix from XYZ and RPY angles.
+	HomogMatrix hm;
+	hm.setFromXYZRPY(prop_x, prop_y, prop_z, prop_roll, prop_pitch, prop_yaw);
 
 	// Debug: display created matrix.
-	HomogMatrix hm (outputMatrix);
 	CLOG(LDEBUG) << "HM (HomogMatrix):\n" << hm;
 
 	out_homogMatrix.write(hm);

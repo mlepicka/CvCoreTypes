@@ -133,8 +133,6 @@ struct HomogMatrix : public HomogMatrixBaseType
 	}
 
 
-
-
 /*	/// Method casts the HomogMatrix (tHomogMatrixBaseType) to CompactHomogMatrixBaseType.
 	HomogMatrix & operator = (const CompactHomogMatrixBaseType & hm_)
 	{
@@ -145,6 +143,29 @@ struct HomogMatrix : public HomogMatrixBaseType
 				matrix()(i,j) = hm_(i,j);
 		return *this;
 	}*/
+
+
+	/// Set transform on the basis of XYZ and RPY angles - arguments passed in a single vector.
+	void setFromXYZRPY(cv::Vec6d vec_)
+	{
+		setFromXYZRPY(vec_[0], vec_[1], vec_[2], vec_[3], vec_[4], vec_[5]);
+	}
+
+	/// Set transform on the basis of XYZ and RPY angles.
+	void setFromXYZRPY(double x, double y, double z, double roll, double pitch, double yaw)
+	{
+		// Set translation.
+		Eigen::Vector3d t;
+		t << x,y,z;
+		this->translation() = t;
+
+		// Set rotation (called linear part in Eigen:]).
+		Eigen::Matrix3d m;
+		m = Eigen::AngleAxisd(yaw, Eigen::Vector3d::UnitZ()) * Eigen::AngleAxisd(pitch, Eigen::Vector3d::UnitY()) * Eigen::AngleAxisd(roll, Eigen::Vector3d::UnitX());
+		this->linear() = m;
+	}
+
+
 
 	/// Redirect the output stream.
 	friend ostream & operator<< (ostream &out_, HomogMatrix &hm_) {
