@@ -51,7 +51,7 @@ struct HomogMatrix : public HomogMatrixBaseType
 	}
 
 	/// Constructor casting Eigen::Transform with floats to HomogMatrix Eigen::Transform (with doubles). The conversion is done with the use of Rodrigues (forward and inverse) transform.
-    HomogMatrix(Eigen::Matrix4f mat_)
+	HomogMatrix(Eigen::Matrix4f mat_)
     {
 		cv::Mat_<double> rotationMatrix_in = cv::Mat_<double>::zeros(3,3);
         cv::Mat_<double> rotation;
@@ -168,9 +168,9 @@ struct HomogMatrix : public HomogMatrixBaseType
 
 
 	/// Redirect the output stream.
-	friend ostream & operator<< (ostream &out_, HomogMatrix &hm_) {
+	inline friend ostream & operator<< (ostream &out_, HomogMatrix &hm_) {
 		cv::Matx44d tmp = hm_;
-   		return out_ << tmp;
+		return out_ << tmp;
 	}
 
 	/// Checks whether matrices are similar - returns true if distance is smaller than eps (set to 1e-5 as default).
