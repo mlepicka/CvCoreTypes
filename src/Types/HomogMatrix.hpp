@@ -133,7 +133,7 @@ struct HomogMatrix : public HomogMatrixBaseType
 	}
 
 
-/*	/// Method casts the HomogMatrix (tHomogMatrixBaseType) to CompactHomogMatrixBaseType.
+	/// Method casts the HomogMatrix (tHomogMatrixBaseType) to CompactHomogMatrixBaseType.
 	HomogMatrix & operator = (const CompactHomogMatrixBaseType & hm_)
 	{
 		*this = HomogMatrixBaseType::Identity ();
@@ -142,7 +142,7 @@ struct HomogMatrix : public HomogMatrixBaseType
 			for (int j = 0; j < 4; ++j) 
 				matrix()(i,j) = hm_(i,j);
 		return *this;
-	}*/
+	}
 
 
 	/// Set transform on the basis of XYZ and RPY angles - arguments passed in a single vector.
