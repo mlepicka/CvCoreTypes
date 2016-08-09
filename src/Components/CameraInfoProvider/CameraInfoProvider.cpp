@@ -23,7 +23,7 @@ CameraInfoProvider::CameraInfoProvider(const std::string & name) :
 		projection_matrix("projection_matrix", cv::Mat(cv::Mat::zeros(3, 4, CV_32FC1))),
 		rotation_matrix("rotation_matrix", cv::Mat(cv::Mat::eye(3, 3, CV_32FC1))),
 		translation_matrix("translation_matrix", cv::Mat(cv::Mat::zeros(3, 1, CV_32FC1))),
-		data_file("data_file", string(""))
+		data_file("data_file", std::string(""))
 {
 	width.addConstraint("0");
 	width.addConstraint("1280");
@@ -57,7 +57,7 @@ void CameraInfoProvider::prepareInterface() {
 
 	//"Reload file" handler.
 	registerHandler("reload_file", boost::bind(&CameraInfoProvider::reload_file, this));
-//    addDependency("reload_file", NULL);
+ //   addDependency("reload_file", NULL);
 
 	//"Update params" handler.
 	registerHandler("update_params", boost::bind(&CameraInfoProvider::update_params, this));
@@ -71,7 +71,7 @@ bool CameraInfoProvider::onInit() {
 		CLOG(LINFO) << "reload_file";
 		reload_file();
 	}
-
+	camera_info = Types::CameraInfo();
 	return true;
 }
 
@@ -104,12 +104,13 @@ void CameraInfoProvider::generate_data() {
 	camera_info.setRotationMatrix(rotation_matrix);
 	CLOG(LDEBUG) << "setTranlationMatrix";
 	camera_info.setTranlationMatrix(translation_matrix);
-	CLOG(LDEBUG) << "write";
+	CLOG(LDEBUG) << "write ";
 	out_camerainfo.write(camera_info);
+	CLOG(LDEBUG) << "wrote";
 }
 
 void CameraInfoProvider::update_params() {
-	Types::CameraInfo camera_info = in_camerainfo.read();
+	Types::CameraInfo camera_info = Types::CameraInfo(in_camerainfo.read());
 	width = camera_info.width();
 	height = camera_info.height();
 	camera_matrix = camera_info.cameraMatrix();
@@ -122,7 +123,7 @@ void CameraInfoProvider::update_params() {
 
 void CameraInfoProvider::reload_file() {
 	CLOG(LDEBUG) << "Loading from " << data_file;
-	cv::FileStorage fs(data_file, cv::FileStorage::READ);
+	cv::FileStorage fs = cv::FileStorage(cv::String(data_file), cv::FileStorage::READ);
 	cv::Mat oTempMat;
 	try {
 		fs["M"] >> oTempMat;

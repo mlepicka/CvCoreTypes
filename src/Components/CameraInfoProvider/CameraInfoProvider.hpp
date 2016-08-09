@@ -69,7 +69,7 @@ protected:
 	// Data streams
 	Base::DataStreamOut<Types::CameraInfo> out_camerainfo;
 
-	Base::DataStreamIn<Types::CameraInfo> in_camerainfo;
+	Base::DataStreamIn<Types::CameraInfo, Base::DataStreamBuffer::Newest> in_camerainfo;
 
 	// Handlers
 	Base::EventHandler2 h_generate_data;
@@ -89,7 +89,7 @@ protected:
 	Base::Property<cv::Mat, Types::MatrixTranslator> projection_matrix;
 	Base::Property<cv::Mat, Types::MatrixTranslator> rotation_matrix;
 	Base::Property<cv::Mat, Types::MatrixTranslator> translation_matrix;
-	Base::Property<string> data_file;
+	Base::Property<std::string> data_file;
 	Types::CameraInfo camera_info;
 
 };
